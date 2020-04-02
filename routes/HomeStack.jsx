@@ -3,25 +3,19 @@ import { createStackNavigator } from '@react-navigation/stack';
 
 import HomeScreen from '../screens/Home';
 import ReviewsScreen from '../screens/Review';
+import Header from '../shared/Header';
 
 const Stack = createStackNavigator();
 
 function HomeStack() {
   return (
-    <Stack.Navigator
-      initialRouteName="Home"
-      screenOptions={{
-        headerTintColor: '#777',
-        headerTitleStyle: {
-          fontWeight: 'bold',
-          fontFamily: 'nunito-bold',
-        },
-      }}
-    >
+    <Stack.Navigator initialRouteName="Home" >
       <Stack.Screen
         name="Home"
         component={HomeScreen}
-        options={{ title: 'GameZone' }}
+        options={ ({ navigation }) => {
+          return {headerTitle: () =>  <Header navigation={navigation} title='GameZone' /> }
+        }}
       />
       <Stack.Screen
         name="Review"
