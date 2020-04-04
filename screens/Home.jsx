@@ -6,6 +6,7 @@ import { globalStyles } from '../styles/global';
 import Card from '../shared/Card';
 import Modal from '../shared/Modal';
 import ReviewForm from './ReviewForm';
+import FlatButton from '../shared/Button';
 
 export default function Home({ navigation: { navigate }}) {
   const [reviews, setReviews] = useState([
@@ -15,6 +16,8 @@ export default function Home({ navigation: { navigate }}) {
   ]);
 
   const [modalVisible, setModalVisible] = useState(false);
+  const [deleteModal, setDeleteModal] = useState(false);
+  const [reviewKey, setReviewKey] = useState('');
 
   const addReview = (review) => {
     review.key = Math.random().toString();
@@ -24,6 +27,19 @@ export default function Home({ navigation: { navigate }}) {
     ]));
     setModalVisible(false);
   }
+
+  const closeModal = () => setDeleteModal(false);
+
+  const openDeleteModal = key => {
+    setDeleteModal(true);
+    setReviewKey(key);
+  }
+
+  const deleteReview = key => {
+    setReviews(currentReviews => currentReviews.filter(review => review.key != key));
+    setDeleteModal(false);
+  };
+
   return (
     <View style={globalStyles.container}>
       <MaterialIcons
@@ -36,17 +52,43 @@ export default function Home({ navigation: { navigate }}) {
         <MaterialIcons
           name='close'
           size={24}
-          onPress={() => setModalVisible(false)}
+          onPress={() => (setModalVisible(false))}
           style={{ ...styles.button, ...styles.cancelButton }}
         />
         <ReviewForm addReview={addReview}/>
       </Modal>
+
+      <Modal modalVisible={deleteModal}>
+        <View style={{...globalStyles.container, ...styles.modalContainer}}>
+          <Text style={styles.deleteText}>Are you sure you want to delete this review?</Text>
+          <View style={styles.deleteModalButtons}>
+            <FlatButton
+              text='cancel'
+              handlePress={closeModal}
+              otherStyles={{backgroundColor: '#777', width: 130}}
+            />
+            <FlatButton
+              text='delete'
+              handlePress={() => deleteReview(reviewKey)}
+              otherStyles={{backgroundColor: 'red', width: 130}}
+             />
+          </View>
+        </View>
+      </Modal>
+
       <FlatList
         data={reviews}
         renderItem={({item}) => (
           <TouchableOpacity onPress={() => navigate('Review', item)} >
             <Card>
               <Text style={globalStyles.titleText}>{item.title}</Text>
+
+              <MaterialIcons
+                name='delete'
+                size={24}
+                onPress={() => openDeleteModal(item.key)}
+                style={styles.deleteIcon}
+              />
             </Card>
           </TouchableOpacity>
         )}
@@ -67,5 +109,24 @@ const styles = StyleSheet.create({
   cancelButton: {
     marginTop: 20,
     marginBottom: 0
+  },
+  modalContainer: {
+    marginTop: 80
+  },
+  deleteIcon: {
+    position: 'absolute',
+    right: 0,
+    color: 'black'
+  },
+
+  deleteText: {
+    padding: 30,
+    alignSelf: 'center',
+    fontFamily: 'nunito-bold',
+    fontSize: 25
+  },
+  deleteModalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
   }
-})
+});
