@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { FlatList, Text, TouchableOpacity, View } from 'react-native';
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
 
 import { globalStyles } from '../styles/global';
 import Card from '../shared/Card';
+import Modal from '../shared/Modal';
 
 export default function Home({ navigation: { navigate }}) {
   const [reviews, setReviews] = useState([
@@ -11,8 +13,24 @@ export default function Home({ navigation: { navigate }}) {
     {title: 'Testing data', rating: 3, body: 'This is another testing data', key: '3'},
   ]);
 
+  const [modalVisible, setModalVisible] = useState(false);
+
   return (
     <View style={globalStyles.container}>
+      <MaterialIcons
+        name='add'
+        size={24}
+        onPress={() => (setModalVisible(true))}
+        style={styles.button}
+      />
+      <Modal modalVisible={modalVisible}>
+        <MaterialIcons
+          name='close'
+          size={24}
+          onPress={() => setModalVisible(false)}
+          style={{ ...styles.button, ...styles.cancelButton }}
+        />
+      </Modal>
       <FlatList
         data={reviews}
         renderItem={({item}) => (
@@ -26,3 +44,18 @@ export default function Home({ navigation: { navigate }}) {
     </View>
   );
 };
+
+const styles = StyleSheet.create({
+  button: {
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#f2f2f2',
+    padding: 10,
+    borderRadius: 10,
+    alignSelf: 'center'
+  },
+  cancelButton: {
+    marginTop: 20,
+    marginBottom: 0
+  }
+})
