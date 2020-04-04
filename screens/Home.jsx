@@ -5,6 +5,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { globalStyles } from '../styles/global';
 import Card from '../shared/Card';
 import Modal from '../shared/Modal';
+import ReviewForm from './ReviewForm';
 
 export default function Home({ navigation: { navigate }}) {
   const [reviews, setReviews] = useState([
@@ -15,6 +16,14 @@ export default function Home({ navigation: { navigate }}) {
 
   const [modalVisible, setModalVisible] = useState(false);
 
+  const addReview = (review) => {
+    review.key = Math.random().toString();
+    setReviews((currentReviews) => ([
+      review,
+      ...currentReviews
+    ]));
+    setModalVisible(false);
+  }
   return (
     <View style={globalStyles.container}>
       <MaterialIcons
@@ -30,6 +39,7 @@ export default function Home({ navigation: { navigate }}) {
           onPress={() => setModalVisible(false)}
           style={{ ...styles.button, ...styles.cancelButton }}
         />
+        <ReviewForm addReview={addReview}/>
       </Modal>
       <FlatList
         data={reviews}

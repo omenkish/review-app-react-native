@@ -1,5 +1,5 @@
 import React from 'react';
-import {Modal, StyleSheet, Text, View } from 'react-native';
+import {Keyboard, Modal, StyleSheet, TouchableWithoutFeedback, View } from 'react-native';
 
 export default (props) => {
   return (
@@ -9,9 +9,11 @@ export default (props) => {
         transparent={false}
         visible={props.modalVisible}
       >
-        <View style={styles.modalContent}>
-          {props.children}
-        </View>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.modalContent}>
+            {props.children}
+          </View>
+        </TouchableWithoutFeedback>
       </Modal>
     </View>
   );
